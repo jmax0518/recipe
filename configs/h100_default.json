@@ -1,5 +1,5 @@
 {
-  "_comment": "Default Karpa-1 training: ~300M params on H100. Stage 2 confirmation runs use this config with different seeds.",
+  "_comment": "Default Ralph-1 training: ~300M params on H100. Stage 2 confirmation runs use this config with different seeds.",
   "vocab_size": 50257,
   "dim": 1024,
   "n_layers": 16,

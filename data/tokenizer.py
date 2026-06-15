@@ -1,4 +1,4 @@
-"""Tokenizer for Karpa launch track — GPT-2 BPE via tiktoken."""
+"""Tokenizer for Ralph launch track — GPT-2 BPE via tiktoken."""
 
 from __future__ import annotations
 

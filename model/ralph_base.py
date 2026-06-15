@@ -1,5 +1,5 @@
 """
-Karpa-base — minimal Llama-style decoder-only transformer.
+Ralph-base — minimal Llama-style decoder-only transformer.
 
 Patchable surface for the launch track. Miners may modify any of the modules
 here (attention variant, normalization, activation, etc.) as part of a
@@ -24,7 +24,7 @@ import torch.nn.functional as F
 
 
 @dataclass
-class KarpaConfig:
+class RalphConfig:
     vocab_size: int = 50257  # GPT-2 BPE
     dim: int = 512
     n_layers: int = 8
@@ -85,7 +85,7 @@ def apply_rope(x: torch.Tensor, rope_cache: torch.Tensor) -> torch.Tensor:
 
 
 class Attention(nn.Module):
-    def __init__(self, cfg: KarpaConfig):
+    def __init__(self, cfg: RalphConfig):
         super().__init__()
         self.n_heads = cfg.n_heads
         self.head_dim = cfg.head_dim
@@ -112,7 +112,7 @@ class Attention(nn.Module):
 
 
 class SwiGLU(nn.Module):
-    def __init__(self, cfg: KarpaConfig):
+    def __init__(self, cfg: RalphConfig):
         super().__init__()
         hidden = int(cfg.dim * cfg.ffn_mult)
         # Round to multiple of 64 for kernel friendliness.
@@ -128,7 +128,7 @@ class SwiGLU(nn.Module):
 
 
 class Block(nn.Module):
-    def __init__(self, cfg: KarpaConfig):
+    def __init__(self, cfg: RalphConfig):
         super().__init__()
         self.attn_norm = RMSNorm(cfg.dim, cfg.rms_norm_eps)
         self.attn = Attention(cfg)
@@ -141,13 +141,13 @@ class Block(nn.Module):
         return x
 
 
-class KarpaBase(nn.Module):
+class RalphBase(nn.Module):
     """
     Minimal Llama-style decoder-only transformer.
     Inputs: token ids (B, T). Outputs: logits (B, T, vocab_size).
     """
 
-    def __init__(self, cfg: KarpaConfig):
+    def __init__(self, cfg: RalphConfig):
         super().__init__()
         self.cfg = cfg
         self.tok_embed = nn.Embedding(cfg.vocab_size, cfg.dim)
@@ -201,3 +201,16 @@ class KarpaBase(nn.Module):
                 ignore_index=-100,
             )
         return logits, loss
+
+
+# ---------------------------------------------------------------------------
+# Back-compat aliases (rebrand karpa -> ralph, 2026-06).
+# The classes were renamed KarpaBase -> RalphBase / KarpaConfig -> RalphConfig.
+# These aliases keep `from model import KarpaBase, KarpaConfig` resolving for
+# any unmigrated importer or out-of-tree tooling. Checkpoints are unaffected:
+# torch.save stores asdict(cfg) under "config" (field names, not the class
+# name) and state_dict keys are module-attribute paths, so neither the class
+# name nor "Karpa"/"Ralph" is ever serialized. Safe to remove once all
+# external consumers cut over.
+KarpaConfig = RalphConfig
+KarpaBase = RalphBase
