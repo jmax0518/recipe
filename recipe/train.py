@@ -481,12 +481,7 @@ def train(cfg: TrainConfig, out_dir: Path, use_wandb: bool = False) -> dict:
         entry = {
             "step": step,
             "loss": step_loss,
-            "lr": lr,
-            "grad_norm": grad_norm,
-            "tokens_seen": tokens_seen,
-            "tokens_per_sec": tok_per_s,
-            "elapsed_s": elapsed,
-        }
+            "lr": lr,          }
         # Diagnostic held-out eval at the configured cadence (and on the final
         # step). Folded into the same log entry so the JSONL/wandb carry a
         # train-loss vs val_bpb pair you can watch for overfitting.
