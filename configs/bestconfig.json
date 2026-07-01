@@ -1,0 +1,41 @@
+{
+    "_comment": "bestconfig: 254M Muon baseline (h100_proxy geometry). NOTE: kings #618 and #572 were reverted as forgeries (data-bypass / compute), so canonical cosine_lr is plain cosine again and the model has no readout-calibration head. This config stacks two clean, honored upgrades over that baseline: (1) embed_lr=0.015 (embeddings/head train ~19x faster than the 8e-4 AdamW peak; norms stay on max_lr); (2) schedule=wsd, stable_frac=0.8 (re-added cleanly, LR-shape only, no data bypass). A/B each independently before trusting the stack. logit_softcap is still not config-reachable (needs a build_model thread-through).",
+    "vocab_size": 50257,
+    "dim": 1024,
+    "n_layers": 16,
+    "n_heads": 16,
+    "head_dim": 64,
+    "ffn_mult": 2.6875,
+    "max_seq_len": 1024,
+  
+    "seq_len": 512,
+    "batch_size": 512,
+    "micro_batch_size": 128,
+    "total_steps": 2400,
+    "warmup_steps": 240,
+    "max_lr": 0.0008,
+    "min_lr": 3e-05,
+    "weight_decay": 0.1,
+    "beta1": 0.9,
+    "beta2": 0.98,
+    "grad_clip": 1.0,
+  
+    "schedule": "wsd",
+    "stable_frac": 0.8,
+  
+    "optimizer": "muon",
+    "muon_lr": 0.04,
+    "muon_momentum": 0.95,
+    "muon_ns_steps": 5,
+    "embed_lr": 0.015,
+  
+    "data_seed": 1337,
+    "init_seed": 1337,
+    "use_bf16": true,
+    "log_every": 50,
+
+    "val_every": 50,
+    "val_max_tokens": 1000000,
+    "val_batch_size": 16
+  }
+  
